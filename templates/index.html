@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <section class="hero">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title">Tree Complexity Intuition</h1>
+          <p>index of trees in image folder: {{images}}</p>
+         
+          
+        </div>
+         <div class="container has-text-centered">{% for item in img_list %}
+            <img src="{{item}}" width="500" height="600">
+                {% endfor %}</div>
+      </div>
+      {% if message %}
+      <p class="message">{{ message | safe }}</p>
+      {% endif %}
+      <p>Choose which picture is more complex:</p>
+      <form action ='' method='post' id='submit_form'>
+        <input type="radio" id='1' name='complex' value='TRUE'>
+        <label for="1">Picture 1</label><br>
+        <input type="radio" id='2' name='complex' value='FALSE'>
+        <label for="2">Picture 2</label><br>
+        <button id=submit class="button is-primary is-small">Save</button>
+    </form>
+    <div>
+      <form action="/submit_db">
+        <button id=submit_ddb >write csv</button>
+      </form>
+      
+    </div>
+    </section>
+{% endblock %}
