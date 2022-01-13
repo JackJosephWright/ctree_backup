@@ -40,14 +40,14 @@ def commit_winner(winner, loser):
     db.session.commit()
 app = Flask(__name__)
 
-ENV = 'dev'
+ENV = 'prod'
 
 if ENV == 'dev':
     app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI']= 'postgresql://postgres:password@localhost:5432/compare_tree'
 else:
     app.debug = False
-    app.config['SQLALCHEMY_DATABASE_URI']= ''
+    app.config['SQLALCHEMY_DATABASE_URI']= 'postgres://irbfaicngxcfud:503c504e8bd4ecc7364fdf57fe13b8dd299ad9f2e19a48a080d9c0406faa5cf2@ec2-184-73-243-101.compute-1.amazonaws.com:5432/d1e7gf83mnobjj'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
