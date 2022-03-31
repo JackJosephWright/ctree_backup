@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
+from sqlalchemy import insert
 from random import sample, randint
 import pandas as pd
 import werkzeug
@@ -38,9 +39,12 @@ def commit_winner(winner, loser):
     loser_query = db.session.query(Grades).filter(Grades.pic_number ==loser).first()
     loser_query.L +=1
     db.session.commit()
+    #Trying to append a row to raw_data table
+    db.session.add(Raw(W=winner, L=loser))
+    db.session.commit()
 app = Flask(__name__)
 
-ENV = 'prod'
+ENV = 'dev'
 
 if ENV == 'dev':
     app.debug = True
@@ -49,8 +53,10 @@ else:
     app.debug = False
     app.config['SQLALCHEMY_DATABASE_URI']= 'postgres://irbfaicngxcfud:503c504e8bd4ecc7364fdf57fe13b8dd299ad9f2e19a48a080d9c0406faa5cf2@ec2-184-73-243-101.compute-1.amazonaws.com:5432/d1e7gf83mnobjj'
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
+
+    
 #engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'], pool_pre_ping=True, echo=False)
 #set to query database
 
@@ -75,8 +81,15 @@ class Last_Accessed(db.Model):
     def __init__(self, pic_one, pic_two):
         self.pic_one = pic_one
         self.pic_two = pic_two
-
-  
+class Raw(db.Model):
+    __tablename__ = 'raw_data'
+    id = db.Column(db.Integer, primary_key = True)
+    W = db.Column(db.String(200))
+    L = db.Column(db.String(200))
+    def __init__(self, W,L):
+        self.W = W
+        self.L = L
+db.create_all()
 @app.route('/', methods = ['GET','POST'])
 def index():
 
@@ -127,3 +140,5 @@ def submit():
 
 if __name__ =='__main__':
     app.run()
+    
+    
